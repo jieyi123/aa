@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc
+        https://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd http://www.alibaba.com/schema/stat http://www.alibaba.com/schema/stat.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--开启IOC和DI的注解编程-->
+    <context:component-scan base-package="com.duyi"></context:component-scan>
+
+    <!--开启AOP注解编程-->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+
+    <!--sm整合配置-->
+    <!--管理数据源-->
+    <context:property-placeholder  location="classpath:db.properties"></context:property-placeholder>
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${mysql.driver}"></property>
+        <property name="url" value="${mysql.url}"></property>
+        <property name="username" value="${mysql.username}"></property>
+        <property name="password" value="${mysql.password}"></property>
+        <property name="maxActive" value="${mysql.maxActive}"></property>
+        <property name="maxIdle" value="${mysql.maxIdle}"></property>
+        <property name="minIdle" value="${mysql.minIdle}"></property>
+        <property name="maxWait" value="${mysql.maxWait}"></property>
+     </bean>
+    <!--管理工厂-->
+    <bean name="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+    </bean>
+    <!--通过mapper机制产生对应接口的代理类-->
+    <bean name="mapper" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"></property>
+        <property name="basePackage" value="com.duyi.dao"></property>
+    </bean>
+
+    <!--管理事务-->
+    <bean name="manager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <!--管理事务策略-->
+    <!--manager的事务管理策略和切入点都有注解配置，开启事务的注解编程-->
+    <tx:annotation-driven transaction-manager="manager"></tx:annotation-driven>
+</beans>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--sm整合 将mybatis的数据源，工厂，事务交给spring管理 -->
+    <!--就不需要在当前xml文件中配置environments-->
+    <mappers>
+        <mapper class="com.duyi.dao.DeptDao"></mapper>
+        <mapper class="com.duyi.dao.EmpDao"></mapper>
+    </mappers>
+</configuration>
